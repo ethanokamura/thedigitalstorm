@@ -1,26 +1,94 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "daisyui" {
+  themes: "digital-storm" --default;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@plugin "daisyui/theme" {
+  name: "digital-storm";
+  default: true;
+  --color-base-100: #10141a;
+  --color-base-200: #161b23;
+  --color-base-300: #1f2630;
+  --color-base-content: #e8ecf0;
+  --color-primary: #8875E0;
+  --color-primary-content: #10141a;
+  --color-secondary: #7dc4ff;
+  --color-secondary-content: #10141a;
+  --color-accent: #d896ff;
+  --color-accent-content: #10141a;
+  --color-neutral: #252d39;
+  --color-neutral-content: #b0b8c3;
+  --color-info: #7dc4ff;
+  --color-info-content: #10141a;
+  --color-success: #b3de8e;
+  --color-success-content: #10141a;
+  --color-warning: #ffd88a;
+  --color-warning-content: #10141a;
+  --color-error: #ff7b85;
+  --color-error-content: #10141a;
+  --radius-selector: 2rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 1;
+  --noise: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+
+@layer base {
+  /* Hide scrollbar for all elements */
+  *::-webkit-scrollbar {
+    display: none;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Hide scrollbar for Firefox */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *:focus {
+    outline: none;
+  }
+
+  * {
+    /* user-select: none; */
+    --font-sans: var(--font-family-base);
+  }
+
+  main {
+    @apply py-30 px-4 md:px-10 w-screen min-h-screen mx-auto max-w-3xl flex flex-col gap-10;
+  }
+
+  html {
+    background-color: var(--color-base-100);
+    padding: 0px;
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto; /* Allow vertical scroll but hide scrollbar */
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    font-family: var(--font-family-base);
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    width: 100vw;
+    min-height: 100vh;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
 }

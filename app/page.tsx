@@ -1,65 +1,109 @@
-import Image from "next/image";
+import Link from "next/link";
+import { FaShieldAlt, FaUsers, FaBook, FaArrowRight } from "react-icons/fa";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="pt-0">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto">
+          {/* Header with Icon */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full mb-6">
+              <FaShieldAlt className="text-base-content text-4xl" />
+            </div>
+            <h1 className="text-5xl font-bold text-base-content mb-4">
+              Welcome
+            </h1>
+          </div>
+
+          {/* Main Content Card */}
+          <div className="bg-base-200 rounded-2xl shadow-xl p-8 md:p-12 mb-8">
+            <div className="prose prose-lg max-w-none space-y-6">
+              <p className="text-base-content/70 leading-relaxed">
+                Thank you for your interest in receiving and delivering the{" "}
+                <b>DigitialStorm</b> presentation with a focus on online safety
+                and scams targeted at teenagers & young people.
+              </p>
+
+              <p className="text-base-content/70 leading-relaxed">
+                By filling out the details below, we will have a better idea
+                who, where, when and how this presentation will be utilized.
+                This will better help us serve the community of parties
+                interested in helping our young people learn and defend
+                themselves against these threats.
+              </p>
+
+              <p className="text-base-content/70 leading-relaxed">
+                We really appreciate your energy, efforts and drive to take on
+                these threats through education.
+              </p>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-base-200 rounded-xl p-6 shadow-md w-full">
+              <div className="flex items-center text-lg gap-2 mb-2">
+                <FaShieldAlt className="text-primary" />
+                <h3 className="font-semibold text-base-content">
+                  Online Safety
+                </h3>
+              </div>
+              <p className="text-base-content/70 text-sm">
+                Protect young people from digital threats and online scams
+              </p>
+            </div>
+
+            <div className="bg-base-200 rounded-xl p-6 shadow-md w-full">
+              <div className="flex items-center text-lg gap-2 mb-2">
+                <FaUsers className="text-primary" />
+                <h3 className="font-semibold text-base-content">
+                  Community Impact
+                </h3>
+              </div>
+              <p className="text-base-content/70 text-sm">
+                Join educators making a difference in their communities
+              </p>
+            </div>
+
+            <div className="bg-base-200 rounded-xl p-6 shadow-md w-full">
+              <div className="flex items-center text-lg gap-2 mb-2">
+                <FaBook className="text-primary" />
+                <h3 className="font-semibold text-base-content">
+                  Education First
+                </h3>
+              </div>
+              <p className="text-base-content/70 text-sm">
+                Comprehensive presentation materials ready to deliver
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-3 bg-primary hover:bg-accent text-base-content font-semibold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 text-lg"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Get Started with Registration
+              <FaArrowRight className="text-xl" />
+            </Link>
+            <p className="text-base-content/70 text-sm mt-4">
+              Takes approximately 2 minutes to complete
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-base-300">
+        <div className="container mx-auto px-4 py-8">
+          <p className="text-center text-base-content/70 text-sm">
+            TheDigitalStorm - Committed to digital safety education.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
