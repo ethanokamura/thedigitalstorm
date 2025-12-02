@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FaCaretDown, FaEnvelope } from "react-icons/fa";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 // US States
 const US_STATES = [
@@ -142,11 +143,7 @@ const COUNTRIES = [
 ];
 
 export default function PresentationForm() {
-  // const recaptchaRef = useRef(null);
-  // const onCaptchaChange = (token) => {
-  //   // Store the token in state or send it with form data
-  //   console.log("reCAPTCHA token:", token);
-  // };
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [complete, setComplete] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -192,13 +189,28 @@ export default function PresentationForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setComplete(true);
-    console.log("Form submitted:", formData);
-    await fetch("/api/submit-form", {
+
+    if (!executeRecaptcha) {
+      console.log("reCAPTCHA not yet available");
+      return;
+    }
+    const token = await executeRecaptcha("submit_form");
+
+    const response = await fetch("/api/submit-form", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        ...formData,
+        recaptchaToken: token,
+      }),
     });
+
+    if (response.ok) {
+      setComplete(true);
+    } else {
+      const error = await response.json();
+      console.error("Form submission failed:", error);
+    }
   };
 
   const showStateSelection =
@@ -254,63 +266,62 @@ export default function PresentationForm() {
                 />
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Email <span className="text-error">*</span>
-              </label>
-              <div className="mt-2 grid grid-cols-1">
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-1.5 pr-3 pl-10 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:pl-9 sm:text-sm/6"
-                />
-                <FaEnvelope
-                  aria-hidden="true"
-                  className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center sm:size-4 text-base-content/50"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Phone Number
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md bg-base-100 outline-1 -outline-offset-1 outline-base-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-primary">
-                  <div className="grid shrink-0 grid-cols-1 focus-within:relative">
-                    <select
-                      id="country"
-                      name="country"
-                      autoComplete="country"
-                      aria-label="Country"
-                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-base-100 py-1.5 pr-7 pl-3 text-base text-base-content/50 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
-                    >
-                      <option>US</option>
-                      <option>CA</option>
-                      <option>EU</option>
-                    </select>
-                    <FaCaretDown
-                      aria-hidden="true"
-                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
-                    />
-                  </div>
+            <div className="flex gap-4">
+              <div className="w-full">
+                <label className="block text-sm font-medium mb-1">
+                  Email <span className="text-error">*</span>
+                </label>
+                <div className="mt-2 grid grid-cols-1">
                   <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
+                    type="email"
+                    name="email"
+                    required
+                    value={formData.email}
                     onChange={handleChange}
-                    placeholder="123-456-7890"
-                    className="block min-w-0 grow bg-base-100 py-1.5 pr-3 pl-1 text-base text-base-content placeholder:text-base-content/70 focus:outline-none sm:text-sm/6"
+                    placeholder="you@example.com"
+                    className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-1.5 pr-3 pl-10 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:pl-9 sm:text-sm/6"
+                  />
+                  <FaEnvelope
+                    aria-hidden="true"
+                    className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center sm:size-4 text-base-content/50"
                   />
                 </div>
               </div>
+              <div className="w-full">
+                <label className="block text-sm font-medium mb-1">
+                  Phone Number
+                </label>
+                <div className="mt-2">
+                  <div className="flex rounded-md bg-base-100 outline-1 -outline-offset-1 outline-base-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-primary">
+                    <div className="grid shrink-0 grid-cols-1 focus-within:relative">
+                      <select
+                        id="country"
+                        name="country"
+                        autoComplete="country"
+                        aria-label="Country"
+                        className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-base-100 py-1.5 pr-7 pl-3 text-base text-base-content/50 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                      >
+                        <option>US</option>
+                        <option>CA</option>
+                        <option>EU</option>
+                      </select>
+                      <FaCaretDown
+                        aria-hidden="true"
+                        className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
+                      />
+                    </div>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      placeholder="123-456-7890"
+                      className="block min-w-0 grow bg-base-100 py-1.5 pr-3 pl-1 text-base text-base-content placeholder:text-base-content/70 focus:outline-none sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-
             <div className="flex gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium mb-1">
@@ -649,6 +660,7 @@ export default function PresentationForm() {
           </div>
         </div>
         {/* Submit Button */}
+
         <div className="pt-4">
           <button
             type="submit"

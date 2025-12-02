@@ -91,4 +91,9 @@
   body::-webkit-scrollbar {
     display: none;
   }
+
+  input:is(:-webkit-autofill, :autofill) {
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+  }
 }
