@@ -36,6 +36,9 @@
   --noise: 0;
 }
 
+@theme inline {
+  --font-lucky: var(--font-luckiest-guy)
+}
 
 @layer base {
   /* Hide scrollbar for all elements */
@@ -56,6 +59,7 @@
   * {
     /* user-select: none; */
     --font-sans: var(--font-family-base);
+    --font-lucky: var(--font-luckiest-guy);
   }
 
   main {

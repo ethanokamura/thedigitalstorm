@@ -19,6 +19,9 @@ export default function Home() {
 
           {/* Main Content Card */}
           <div className="bg-base-200 rounded-2xl shadow-xl p-8 md:p-12 mb-8">
+            <h1 className="text-2xl font-bold text-base-content mb-4">
+              Navigating the Digital Storm
+            </h1>
             <div className="prose prose-lg max-w-none space-y-6">
               <p className="text-base-content/70 leading-relaxed">
                 Thank you for your interest in receiving and delivering the{" "}

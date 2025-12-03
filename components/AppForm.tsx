@@ -222,7 +222,13 @@ export default function PresentationForm() {
     formData.country === "Canada" ? "Province/Territory" : "State";
 
   return complete ? (
-    <button className="btn">[Download Presentation]</button>
+    <div className="space-y-4">
+      <h1 className="text-4xl font-bold">Thank You!</h1>
+      <p className="text-base-content/70">
+        Thank you for registering your interest in this initiative. We will
+        email you when the presentation is released.
+      </p>
+    </div>
   ) : (
     <div>
       <h1 className="text-4xl font-bold mb-6">Presenter Registration</h1>
