@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown, FaEnvelope } from "react-icons/fa";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import Link from "next/link";
@@ -146,7 +146,37 @@ const COUNTRIES = [
 export default function PresentationForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [complete, setComplete] = useState(false);
-  const [canSubmit, setCanSubmit] = useState(false);
+  const [deviceType, setDeviceType] = useState("Unknown");
+  const [browserName, setBrowserName] = useState("Unknown");
+
+  useEffect(() => {
+    const getDeviceData = () => {
+      if (typeof window !== "undefined") {
+        const userAgent = navigator.userAgent;
+        const isMobile =
+          /Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            userAgent
+          );
+        setDeviceType(isMobile ? "Mobile" : "Desktop");
+        if (userAgent.includes("Chrome")) {
+          setBrowserName("Chrome");
+        } else if (userAgent.includes("Firefox")) {
+          setBrowserName("Firefox");
+        } else if (
+          userAgent.includes("Safari") &&
+          !userAgent.includes("Chrome")
+        ) {
+          setBrowserName("Safari");
+        } else if (userAgent.includes("Edge")) {
+          setBrowserName("Edge");
+        } else {
+          setBrowserName("Unknown");
+        }
+      }
+    };
+    getDeviceData();
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -206,6 +236,8 @@ export default function PresentationForm() {
       body: JSON.stringify({
         ...formData,
         recaptchaToken: token,
+        deviceType: deviceType,
+        browserName: browserName,
       }),
     });
 
@@ -746,7 +778,7 @@ export default function PresentationForm() {
             !formData.acknowledgement) && (
             <div className="px-2 py-1 text-center text-warning border border-warning/20 bg-warning/5 rounded-lg">
               <p>
-                Please fill out all the required fields before submission{" "}
+                You have not completed all the required fields{" "}
                 <span className="text-error">*</span>
               </p>
             </div>
