@@ -12,8 +12,8 @@ export default function Home() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full mb-6">
               <FaShieldAlt className="text-base-content text-4xl" />
             </div>
-            <h1 className="text-5xl font-bold text-base-content mb-4">
-              Welcome
+            <h1 className="text-5xl font-lucky tracking-wide text-base-content mb-4">
+              WELCOME
             </h1>
           </div>
 

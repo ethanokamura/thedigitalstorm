@@ -146,6 +146,7 @@ const COUNTRIES = [
 export default function PresentationForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [complete, setComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -189,6 +190,7 @@ export default function PresentationForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
 
     if (!executeRecaptcha) {
@@ -212,6 +214,7 @@ export default function PresentationForm() {
       const error = await response.json();
       console.error("Form submission failed:", error);
     }
+    setLoading(false);
   };
 
   const showStateSelection =
@@ -714,6 +717,7 @@ export default function PresentationForm() {
             type="submit"
             className="w-full py-2 px-4 bg-primary rounded border border-primary disabled:bg-base-200 disabled:border-base-300"
             disabled={
+              loading ||
               !formData.firstName ||
               !formData.lastName ||
               !formData.email ||
@@ -725,7 +729,7 @@ export default function PresentationForm() {
               !formData.acknowledgement
             }
           >
-            Submit
+            {loading ? "Submitting Response..." : "Submit"}
           </button>
         </div>
 
