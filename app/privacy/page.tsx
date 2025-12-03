@@ -9,10 +9,10 @@ export default function Privacy() {
       </div>
       <div className="space-y-4 text-base-content/70">
         <p>
-          Thank you for your interest in XYZ, and for your support of our
-          mission to defend teenagers from online harm, scams, and exploitation.
-          By using our site or any of the services that we provide, you agree to
-          this Privacy Policy.
+          Thank you for your interest in this program, and for your support of
+          our mission to defend teenagers from online harm, scams, and
+          exploitation. By using our site or any of the services that we
+          provide, you agree to this Privacy Policy.
         </p>
         <p>
           <b className="text-base-content">Information We Collect:</b> We may
