@@ -245,7 +245,7 @@ export default function PresentationForm() {
           <h2 className="text-xl font-semibold mb-4">Your Details</h2>
 
           <div className="space-y-4">
-            <div className="flex gap-4">
+            <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium mb-1">
                   First Name <span className="text-error">*</span>
@@ -276,7 +276,7 @@ export default function PresentationForm() {
                 />
               </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium mb-1">
                   Email <span className="text-error">*</span>
@@ -332,7 +332,7 @@ export default function PresentationForm() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium mb-1">
                   Country <span className="text-error">*</span>
@@ -404,14 +404,17 @@ export default function PresentationForm() {
                 />
               </div>
 
-              <div className="w-full flex-2 min-w-96">
+              <div className="w-full flex-2 sm:min-w-96">
                 <label className="block text-sm font-medium mb-1">
                   LinkedIn
                   <span className="text-error">*</span>
                 </label>
                 <div className="mt-2 flex">
-                  <div className="flex shrink-0 items-center rounded-l-md bg-base-100 px-3 text-base text-base-content/50 outline-1 -outline-offset-1 outline-base-300 sm:text-sm/6">
+                  <div className="hidden sm:flex shrink-0 items-center rounded-l-md bg-base-100 px-3 text-base text-base-content/50 outline-1 -outline-offset-1 outline-base-300 sm:text-sm/6">
                     https://www.linkedin.com/in/
+                  </div>
+                  <div className="flex sm:hidden shrink-0 items-center rounded-l-md bg-base-100 px-3 text-base text-base-content/50 outline-1 -outline-offset-1 outline-base-300 sm:text-sm/6">
+                    linkedin.com/in/
                   </div>
                   <input
                     type="text"
@@ -622,7 +625,7 @@ export default function PresentationForm() {
 
         {/* Legal Acknowledgment */}
         <div>
-          <div className="flex gap-4 items-centers mb-4">
+          <div className="flex sm:flex-row flex-col gap-4 items-centers mb-4">
             <h2 className="text-xl font-semibold">Legal Acknowledgment</h2>
             <Link
               href="/legal"
