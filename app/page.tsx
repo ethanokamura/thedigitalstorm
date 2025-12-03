@@ -24,9 +24,9 @@ export default function Home() {
             </h1>
             <div className="prose prose-lg max-w-none space-y-6">
               <p className="text-base-content/70 leading-relaxed">
-                Thank you for your interest in receiving and delivering the{" "}
-                <b>DigitialStorm</b> presentation with a focus on online safety
-                and scams targeted at teenagers & young people.
+                Thank you for your interest in delivering the “Navigating the
+                Digital Storm” presentation with a focus on online safety and
+                scams targeted at teenagers & young people.
               </p>
 
               <p className="text-base-content/70 leading-relaxed">
