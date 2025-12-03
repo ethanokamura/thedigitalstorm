@@ -146,6 +146,7 @@ const COUNTRIES = [
 export default function PresentationForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [complete, setComplete] = useState(false);
+  const [canSubmit, setCanSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -714,8 +715,7 @@ export default function PresentationForm() {
           </div>
         </div>
         {/* Submit Button */}
-
-        <div className="pt-4">
+        <div className="pt-4 space-y-4">
           <button
             type="submit"
             className="w-full py-2 px-4 bg-primary rounded border border-primary disabled:bg-base-200 disabled:border-base-300"
@@ -734,6 +734,23 @@ export default function PresentationForm() {
           >
             {loading ? "Submitting Response..." : "Submit"}
           </button>
+          {(loading ||
+            !formData.firstName ||
+            !formData.lastName ||
+            !formData.email ||
+            !formData.industry ||
+            !formData.country ||
+            !formData.username ||
+            !formData.hasAudience ||
+            !formData.timeframe ||
+            !formData.acknowledgement) && (
+            <div className="px-2 py-1 text-center text-warning border border-warning/20 bg-warning/5 rounded-lg">
+              <p>
+                Please fill out all the required fields before submission{" "}
+                <span className="text-error">*</span>
+              </p>
+            </div>
+          )}
         </div>
 
         <Link
