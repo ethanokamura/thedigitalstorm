@@ -11,11 +11,8 @@ export async function POST(request: Request) {
       !data.industry ||
       !data.country ||
       !data.username ||
-      !data.expertise ||
-      !data.locationType ||
+      !data.hasAudience ||
       !data.timeframe ||
-      !data.hasLocation ||
-      !data.needsAuthorization ||
       !data.acknowledgement ||
       !data.recaptchaToken
     ) {

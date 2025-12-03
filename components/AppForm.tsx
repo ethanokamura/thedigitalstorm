@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaCaretDown, FaEnvelope } from "react-icons/fa";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import Link from "next/link";
 
 // US States
 const US_STATES = [
@@ -155,7 +156,7 @@ export default function PresentationForm() {
     state: "",
     username: "",
     expertise: "",
-    hasLocation: "",
+    hasAudience: "",
     locationType: "",
     locationTypeOther: "",
     locationDetails: "",
@@ -447,10 +448,10 @@ export default function PresentationForm() {
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    name="hasLocation"
+                    name="hasAudience"
                     value="yes"
                     required
-                    checked={formData.hasLocation === "yes"}
+                    checked={formData.hasAudience === "yes"}
                     onChange={handleChange}
                     className="mr-2 radio radio-xs"
                   />
@@ -459,10 +460,10 @@ export default function PresentationForm() {
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    name="hasLocation"
+                    name="hasAudience"
                     value="no"
                     required
-                    checked={formData.hasLocation === "no"}
+                    checked={formData.hasAudience === "no"}
                     onChange={handleChange}
                     className="mr-2 radio radio-xs"
                   />
@@ -470,7 +471,7 @@ export default function PresentationForm() {
                 </label>
               </div>
             </div>
-            {formData.hasLocation === "yes" && (
+            {formData.hasAudience === "yes" && (
               <>
                 <div>
                   <label className="block text-sm font-medium mb-1">
@@ -511,7 +512,7 @@ export default function PresentationForm() {
                         type="radio"
                         name="needsAuthorization"
                         value="yes"
-                        required
+                        required={formData.hasAudience === "yes"}
                         checked={formData.needsAuthorization === "yes"}
                         onChange={handleChange}
                         className="mr-2 radio radio-xs"
@@ -523,7 +524,7 @@ export default function PresentationForm() {
                         type="radio"
                         name="needsAuthorization"
                         value="no"
-                        required
+                        required={formData.hasAudience === "yes"}
                         checked={formData.needsAuthorization === "no"}
                         onChange={handleChange}
                         className="mr-2 radio radio-xs"
@@ -540,7 +541,7 @@ export default function PresentationForm() {
                   <div className="mt-2 grid grid-cols-1">
                     <select
                       name="locationType"
-                      required
+                      required={formData.hasAudience === "yes"}
                       value={formData.locationType}
                       onChange={handleChange}
                       className="col-start-1 row-start-1 bg-base-100 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
@@ -614,9 +615,13 @@ export default function PresentationForm() {
         <div>
           <div className="flex gap-4 items-centers mb-4">
             <h2 className="text-xl font-semibold">Legal Acknowledgment</h2>
-            <button className="text-sm text-base-content/70 mt-1">
+            <Link
+              href="/legal"
+              target="_blank"
+              className="text-sm text-base-content/70 mt-1"
+            >
               Learn more
-            </button>
+            </Link>
           </div>
 
           <div className="space-y-4">
@@ -701,15 +706,30 @@ export default function PresentationForm() {
         <div className="pt-4">
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-base-100 rounded"
+            className="w-full py-2 px-4 bg-primary rounded border border-primary disabled:bg-base-200 disabled:border-base-300"
+            disabled={
+              !formData.firstName ||
+              !formData.lastName ||
+              !formData.email ||
+              !formData.industry ||
+              !formData.country ||
+              !formData.username ||
+              !formData.hasAudience ||
+              !formData.timeframe ||
+              !formData.acknowledgement
+            }
           >
             Submit
           </button>
         </div>
 
-        <button className="mx-auto text-base-content/50 hover:text-base-content text-sm">
+        <Link
+          href="/privacy"
+          target="_blank"
+          className="mx-auto text-base-content/50 hover:text-base-content text-sm"
+        >
           Privacy Policy
-        </button>
+        </Link>
       </form>
     </div>
   );
