@@ -389,7 +389,7 @@ export default function PresentationForm() {
                   required
                   value={formData.industry}
                   onChange={handleChange}
-                  placeholder="Education"
+                  placeholder="Example: Education"
                   className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                 />
               </div>
@@ -418,15 +418,13 @@ export default function PresentationForm() {
 
             <div>
               <label className="block text-sm font-medium mb-1">
-                Your Expertise on Presenting to Middle and High Schoolers? Or
-                Other Expertise? <span className="text-error">*</span>
+                Any additional details you would like to share?
               </label>
-              <textarea
+              <input
+                type="text"
                 name="expertise"
-                required
                 value={formData.expertise}
                 onChange={handleChange}
-                rows={3}
                 className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
               />
             </div>
@@ -442,7 +440,7 @@ export default function PresentationForm() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
-                Do you already have location(s) in mind to present at?
+                Do you already have an audience in mind?
                 <span className="text-error">*</span>
               </label>
               <div className="space-x-4">
@@ -472,125 +470,111 @@ export default function PresentationForm() {
                 </label>
               </div>
             </div>
+            {formData.hasLocation === "yes" && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Expected Number of Attendees?
+                  </label>
+                  <input
+                    type="number"
+                    name="expectedAttendees"
+                    min="0"
+                    placeholder="10"
+                    value={formData.expectedAttendees}
+                    onChange={handleChange}
+                    className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Type of location you plan to present at?
-                <span className="text-error">*</span>
-              </label>
-              <div className="mt-2 grid grid-cols-1">
-                <select
-                  name="locationType"
-                  required
-                  value={formData.locationType}
-                  onChange={handleChange}
-                  className="col-start-1 row-start-1 bg-base-100 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
-                >
-                  <option value="">Select a location type...</option>
-                  <option value="school">School</option>
-                  <option value="sports-team">Sports Team</option>
-                  <option value="business">Business</option>
-                  <option value="church">Church</option>
-                  <option value="other">Other</option>
-                </select>
-                <FaCaretDown
-                  aria-hidden="true"
-                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
-                />
-              </div>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Any additional details you would like to share?
+                  </label>
+                  <input
+                    name="locationDetails"
+                    type="text"
+                    value={formData.locationDetails}
+                    placeholder="Example: Teacher at XYZ High School or Coach of ABC baseball team."
+                    onChange={handleChange}
+                    className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Do you need permission to present to this group?
+                    <span className="text-error">*</span>
+                  </label>
+                  <div className="space-x-4">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="needsAuthorization"
+                        value="yes"
+                        required
+                        checked={formData.needsAuthorization === "yes"}
+                        onChange={handleChange}
+                        className="mr-2 radio radio-xs"
+                      />
+                      Yes
+                    </label>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="needsAuthorization"
+                        value="no"
+                        required
+                        checked={formData.needsAuthorization === "no"}
+                        onChange={handleChange}
+                        className="mr-2 radio radio-xs"
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    What is the location you plan to present at?
+                    <span className="text-error">*</span>
+                  </label>
+                  <div className="mt-2 grid grid-cols-1">
+                    <select
+                      name="locationType"
+                      required
+                      value={formData.locationType}
+                      onChange={handleChange}
+                      className="col-start-1 row-start-1 bg-base-100 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
+                    >
+                      <option value="">Select a location type...</option>
+                      <option value="school">School</option>
+                      <option value="sports-team">Sports Team</option>
+                      <option value="business">Business</option>
+                      <option value="church">Church</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <FaCaretDown
+                      aria-hidden="true"
+                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
+                    />
+                  </div>
+                </div>
 
-            {formData.locationType === "other" && (
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Please specify:
-                </label>
-                <input
-                  type="text"
-                  name="locationTypeOther"
-                  value={formData.locationTypeOther}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 bg-base-100 border-base-300"
-                />
-              </div>
+                {formData.locationType === "other" && (
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Please specify:
+                    </label>
+                    <input
+                      type="text"
+                      name="locationTypeOther"
+                      value={formData.locationTypeOther}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 bg-base-100 border-base-300"
+                    />
+                  </div>
+                )}
+              </>
             )}
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Tell us about your access to this location.
-              </label>
-              <textarea
-                name="locationDetails"
-                value={formData.locationDetails}
-                placeholder="Example: Teacher at XYZ High School or Coach of ABC baseball team."
-                onChange={handleChange}
-                rows={4}
-                className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Do you need authorization to present at this location?
-                <span className="text-error">*</span>
-              </label>
-              <div className="space-x-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="needsAuthorization"
-                    value="yes"
-                    required
-                    checked={formData.needsAuthorization === "yes"}
-                    onChange={handleChange}
-                    className="mr-2 radio radio-xs"
-                  />
-                  Yes
-                </label>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="needsAuthorization"
-                    value="no"
-                    required
-                    checked={formData.needsAuthorization === "no"}
-                    onChange={handleChange}
-                    className="mr-2 radio radio-xs"
-                  />
-                  No
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Expected Number of Attendees
-              </label>
-              <input
-                type="number"
-                name="expectedAttendees"
-                min="0"
-                placeholder="10"
-                value={formData.expectedAttendees}
-                onChange={handleChange}
-                className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Help & Support</h2>
-          <div className="space-y-4">
-            <label className="block text-sm font-medium mb-1">
-              Additional Details and Support
-            </label>
-            <textarea
-              name="otherDetails"
-              value={formData.otherDetails}
-              onChange={handleChange}
-              placeholder="Please share any other details you think we might find helpful. We are trying to learn about the people, locations and audiences."
-              rows={4}
-              className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
-            />
           </div>
         </div>
 
@@ -628,17 +612,70 @@ export default function PresentationForm() {
 
         {/* Legal Acknowledgment */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">Legal Acknowledgment</h2>
+          <div className="flex gap-4 items-centers mb-4">
+            <h2 className="text-xl font-semibold">Legal Acknowledgment</h2>
+            <button className="text-sm text-base-content/70 mt-1">
+              Learn more
+            </button>
+          </div>
 
           <div className="space-y-4">
-            <div className="p-4 h-fit rounded-md border border-warning/30 bg-warning/10">
-              <p className="text-sm text-warning/90">
-                <strong className="text-warning">Disclaimer:</strong> By
-                submitting this form, you acknowledge that all information
-                provided is accurate and complete to the best of your knowledge.
-                You agree to comply with all applicable policies and regulations
-                related to presenting at the specified location.
+            <div className="p-4 rounded-md border border-base-300 bg-base-100 h-32 overflow-scroll space-y-4">
+              <p className="text-base font-bold text-base-content">
+                DISCLAIMER, TERMS, AND CONDITIONS
               </p>
+              <ol className="space-y-2">
+                <li className="text-sm text-base-content/70 list-decimal ml-4">
+                  <b className="text-base-content">
+                    GENERAL DISCLAIMER & INFORMATIONAL PURPOSES ONLY
+                  </b>{" "}
+                  This Presentation is provided strictly for informational and
+                  educational purposes only. It does not constitute, and should
+                  not be relied upon as, legal, medical, psychological, or
+                  professional advice. The creators (&quot;The Providers&quot;)
+                  are not licensed professionals. Users must seek the advice of
+                  qualified professionals for specific concerns or situations.
+                </li>
+                <li className="text-sm text-base-content/70 list-decimal ml-4">
+                  <b className="text-base-content">
+                    USER RESPONSIBILITY & ASSUMPTION OF RISK
+                  </b>{" "}
+                  The User, and the operators of any venue (if applicable), are
+                  solely responsible for determining the appropriateness of the
+                  content for their specific audience. The Providers assume no
+                  responsibility or liability for the manner in which the
+                  Presentation is used, presented, or interpreted, or for any
+                  reaction or outcome resulting from its use.
+                </li>
+                <li className="text-sm text-base-content/70 list-decimal ml-4">
+                  <b className="text-base-content">
+                    THIRD-PARTY CONTENT & REPRESENTATIONS
+                  </b>{" "}
+                  The Providers do not endorse any specific companies, products,
+                  or platforms mentioned. All names, images, or scenarios are
+                  fictional and for illustrative purposes only. AI-generated
+                  images do not depict real individuals.
+                </li>
+                <li className="text-sm text-base-content/70 list-decimal ml-4">
+                  <b className="text-base-content">
+                    LIMITATION OF LIABILITY BY DOWNLOADING, DISTRIBUTING, OR
+                    UTILIZING THIS PRESENTATION, YOU EXPRESSLY AGREE
+                  </b>{" "}
+                  that The Providers shall not be liable for any damages
+                  (including direct, indirect, consequential, or punitive)
+                  arising from the use or inability to use the Presentation. The
+                  User waives all claims against The Providers to the fullest
+                  extent permitted by law.
+                </li>
+                <li className="text-sm text-base-content/70 list-decimal ml-4">
+                  <b className="text-base-content">LICENSE & USE</b> This
+                  Presentation is released under a Creative Commons
+                  Attribution-NonCommercial-ShareAlike 4.0 International License
+                  (CC BY-NC-SA 4.0). Users are free to share and adapt the
+                  material for non-commercial purposes, provided appropriate
+                  credit is given.
+                </li>
+              </ol>
             </div>
 
             <div>
@@ -671,7 +708,7 @@ export default function PresentationForm() {
         </div>
 
         <button className="mx-auto text-base-content/50 hover:text-base-content text-sm">
-          View Privacy Policy
+          Privacy Policy
         </button>
       </form>
     </div>
