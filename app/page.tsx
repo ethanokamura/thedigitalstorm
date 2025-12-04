@@ -25,7 +25,7 @@ export default function Home() {
               <p>
                 Thank you for your interest in facilitating the “Navigating the
                 Digital Storm” presentation which focuses on online safety and
-                scams targeting teenagers and young people in our communities
+                scams targeting teenagers and young people in our communities.
               </p>
 
               <p>
@@ -44,11 +44,11 @@ export default function Home() {
                 <ul className="space-y-2 list-disc marker:text-primary pl-4">
                   <li>
                     <b>Community Impact:</b> Join citizens making a tangible
-                    difference in their local communities
+                    difference in their local communities.
                   </li>
                   <li>
                     <b>Education First:</b> Access comprehensive presentation
-                    materials, ready to deliver with minimal customization
+                    materials, ready to deliver with minimal customization.
                   </li>
                   <li>
                     <b>Online Safety:</b> Help protect young people from digital
@@ -91,12 +91,15 @@ export default function Home() {
               href="/register"
               className="inline-flex items-center gap-2 bg-base-200 hover:bg-base-300 text-base-content font-semibold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 text-lg"
             >
-              Get Started with Registration
+              Register Here
               <FaArrowRight className="text-base-content/70" />
             </Link>
             <p className="text-base-content/70 text-sm mt-4">
               Takes approximately 2 minutes to complete
             </p>
+          </div>
+          <div className="flex justify-center text-base-content/70 hover:text-base-content underline decoration-primary/70 hover:decoration-primary">
+            <Link href="/privacy">Privacy Policy</Link>
           </div>
         </div>
       </div>

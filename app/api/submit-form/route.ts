@@ -4,13 +4,13 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     // Validate required fields
+
     if (
       !data.firstName ||
       !data.lastName ||
       !data.email ||
       !data.industry ||
       !data.country ||
-      !data.username ||
       !data.hasAudience ||
       !data.timeframe ||
       !data.acknowledgement ||

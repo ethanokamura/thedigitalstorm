@@ -1,19 +1,177 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaCaretDown, FaEnvelope } from "react-icons/fa";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import Link from "next/link";
-import { countries, provinces, states } from "@/app/utils/locations";
+
+// US States
+const US_STATES = [
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming",
+];
+
+// Canadian Provinces/Territories
+const CANADIAN_PROVINCES = [
+  "Alberta",
+  "British Columbia",
+  "Manitoba",
+  "New Brunswick",
+  "Newfoundland and Labrador",
+  "Nova Scotia",
+  "Ontario",
+  "Prince Edward Island",
+  "Quebec",
+  "Saskatchewan",
+  "Northwest Territories",
+  "Nunavut",
+  "Yukon",
+];
+
+// Countries list
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Australia",
+  "Germany",
+  "France",
+  "Spain",
+  "Italy",
+  "Netherlands",
+  "Belgium",
+  "Switzerland",
+  "Austria",
+  "Sweden",
+  "Norway",
+  "Denmark",
+  "Finland",
+  "Ireland",
+  "Portugal",
+  "Greece",
+  "Poland",
+  "Czech Republic",
+  "Hungary",
+  "Romania",
+  "Bulgaria",
+  "Croatia",
+  "Slovakia",
+  "Slovenia",
+  "Lithuania",
+  "Latvia",
+  "Estonia",
+  "Luxembourg",
+  "Malta",
+  "Cyprus",
+  "Japan",
+  "South Korea",
+  "Singapore",
+  "New Zealand",
+  "Mexico",
+  "Brazil",
+  "Argentina",
+  "Chile",
+  "Colombia",
+  "Peru",
+  "India",
+  "China",
+  "Hong Kong",
+  "Taiwan",
+  "Thailand",
+  "Vietnam",
+  "Malaysia",
+  "Indonesia",
+  "Philippines",
+  "Israel",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "South Africa",
+  "Egypt",
+  "Nigeria",
+  "Kenya",
+  "Turkey",
+  "Russia",
+  "Ukraine",
+  "Other",
+];
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  industry: string;
+  country: string;
+  state: string;
+  username: string;
+  expertise: string;
+  hasAudience: string;
+  locationType: string;
+  locationTypeOther: string;
+  locationDetails: string;
+  needsAuthorization: string;
+  expectedAttendees: string;
+  timeframe: string;
+  otherDetails: string;
+  acknowledgement: boolean;
+};
 
 export default function PresentationForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [complete, setComplete] = useState(false);
-  const [deviceType, setDeviceType] = useState("Unknown");
-  const [browserName, setBrowserName] = useState("Unknown");
-
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const disclaimerRef = useRef<HTMLDivElement>(null);
+
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -21,6 +179,7 @@ export default function PresentationForm() {
     industry: "",
     country: "",
     state: "",
+    username: "",
     expertise: "",
     hasAudience: "",
     locationType: "",
@@ -32,35 +191,30 @@ export default function PresentationForm() {
     otherDetails: "",
     acknowledgement: false,
   });
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  const disclaimerRef = useRef<HTMLDivElement>(null);
 
+  // Detect device type and browser on mount
   useEffect(() => {
-    const getDeviceData = () => {
-      if (typeof window !== "undefined") {
-        const userAgent = navigator.userAgent;
-        const isMobile =
-          /Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            userAgent
-          );
-        setDeviceType(isMobile ? "Mobile" : "Desktop");
-        if (userAgent.includes("Chrome")) {
-          setBrowserName("Chrome");
-        } else if (userAgent.includes("Firefox")) {
-          setBrowserName("Firefox");
-        } else if (
-          userAgent.includes("Safari") &&
-          !userAgent.includes("Chrome")
-        ) {
-          setBrowserName("Safari");
-        } else if (userAgent.includes("Edge")) {
-          setBrowserName("Edge");
-        }
-      }
+    const userAgent = navigator.userAgent;
+    const isMobile =
+      /Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        userAgent
+      );
+
+    let browser = "Unknown";
+    if (userAgent.includes("Chrome")) browser = "Chrome";
+    else if (userAgent.includes("Firefox")) browser = "Firefox";
+    else if (userAgent.includes("Safari") && !userAgent.includes("Chrome"))
+      browser = "Safari";
+    else if (userAgent.includes("Edge")) browser = "Edge";
+
+    // Store for later use in submission
+    (window as any).__deviceData = {
+      deviceType: isMobile ? "Mobile" : "Desktop",
+      browserName: browser,
     };
-    getDeviceData();
   }, []);
 
+  // Handle scroll detection for disclaimer
   const handleDisclaimerScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const scrolledToBottom =
@@ -105,10 +259,15 @@ export default function PresentationForm() {
 
     try {
       if (!executeRecaptcha) {
-        console.log("reCAPTCHA not yet available");
+        console.error("reCAPTCHA not yet available");
         return;
       }
+
       const token = await executeRecaptcha("submit_form");
+      const deviceData = (window as any).__deviceData || {
+        deviceType: "Unknown",
+        browserName: "Unknown",
+      };
 
       const response = await fetch("/api/submit-form", {
         method: "POST",
@@ -116,8 +275,7 @@ export default function PresentationForm() {
         body: JSON.stringify({
           ...formData,
           recaptchaToken: token,
-          deviceType: deviceType,
-          browserName: browserName,
+          ...deviceData,
         }),
       });
 
@@ -126,6 +284,7 @@ export default function PresentationForm() {
       } else {
         const error = await response.json();
         console.error("Form submission failed:", error);
+        alert("Form submission failed. Please try again.");
       }
     } catch (error) {
       console.error("Submission error:", error);
@@ -135,10 +294,11 @@ export default function PresentationForm() {
     }
   };
 
+  // Form validation
   const showStateSelection =
     formData.country === "United States" || formData.country === "Canada";
   const stateOptions =
-    formData.country === "United States" ? states : provinces;
+    formData.country === "United States" ? US_STATES : CANADIAN_PROVINCES;
   const stateLabel =
     formData.country === "Canada" ? "Province/Territory" : "State";
 
@@ -149,42 +309,47 @@ export default function PresentationForm() {
     formData.industry &&
     formData.country &&
     (!showStateSelection || formData.state) &&
+    formData.username &&
     formData.hasAudience &&
     formData.timeframe &&
     formData.acknowledgement &&
     hasScrolledToBottom;
 
-  return complete ? (
-    <div className="space-y-4">
-      <h1 className="text-4xl font-bold">Success!</h1>
-      <h2 className="text-xl font-bold">Your Interest is Registered!</h2>
-      <p>
-        Thank you for submitting your details. We sincerely appreciate your
-        energy and drive to educate your community on{" "}
-        <b>“Navigating the Digital Storm”</b> and protecting young people from
-        online threats.
-      </p>
-      <h2 className="text-xl font-bold">What Happens Next?</h2>
-      <ul className="space-y-2 list-disc marker:text-primary pl-4">
-        <li>
-          We have received your information about your plans for utilizing the
-          presentation. This helps us better support the community.
-        </li>
-        <li>
-          The presentation package will be officially released and sent to you
-          via email in January.
-        </li>
-      </ul>
-      <p>
-        As we work toward the New Year, we wish you a wonderful and safe holiday
-        season, whatever your traditions may be.
-      </p>
-      <div>
-        <h2 className="text-xl font-bold">Happy Holidays!</h2>
-        <p>- The Digital Storm Education Team</p>
+  if (complete) {
+    return (
+      <div className="space-y-4">
+        <h1 className="text-4xl font-bold">Success!</h1>
+        <h2 className="text-xl font-bold">Your Interest is Registered!</h2>
+        <p>
+          Thank you for submitting your details. We sincerely appreciate your
+          energy and drive to educate your community on{" "}
+          <b>"Navigating the Digital Storm"</b> and protecting young people from
+          online threats.
+        </p>
+        <h2 className="text-xl font-bold">What Happens Next?</h2>
+        <ul className="space-y-2 list-disc marker:text-primary pl-4">
+          <li>
+            We have received your information about your plans for utilizing the
+            presentation. This helps us better support the community.
+          </li>
+          <li>
+            The presentation package will be officially released and sent to you
+            via email in January.
+          </li>
+        </ul>
+        <p>
+          As we work toward the New Year, we wish you a wonderful and safe
+          holiday season, whatever your traditions may be.
+        </p>
+        <div>
+          <h2 className="text-xl font-bold">Happy Holidays!</h2>
+          <p>- The Digital Storm Education Team</p>
+        </div>
       </div>
-    </div>
-  ) : (
+    );
+  }
+
+  return (
     <div>
       <h1 className="text-4xl font-bold mb-6">Presenter Registration</h1>
 
@@ -199,42 +364,55 @@ export default function PresentationForm() {
           <div className="space-y-4">
             <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
-                <label className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium mb-1"
+                >
                   First Name <span className="text-error">*</span>
                 </label>
                 <input
+                  id="firstName"
                   type="text"
                   name="firstName"
                   required
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="John"
-                  className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                  className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                 />
               </div>
 
               <div className="w-full">
-                <label className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium mb-1"
+                >
                   Last Name <span className="text-error">*</span>
                 </label>
                 <input
+                  id="lastName"
                   type="text"
                   name="lastName"
                   required
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Doe"
-                  className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                  className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                 />
               </div>
             </div>
+
             <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
-                <label className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium mb-1"
+                >
                   Email <span className="text-error">*</span>
                 </label>
                 <div className="mt-2 grid grid-cols-1">
                   <input
+                    id="email"
                     type="email"
                     name="email"
                     required
@@ -249,18 +427,22 @@ export default function PresentationForm() {
                   />
                 </div>
               </div>
+
               <div className="w-full">
-                <label className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-medium mb-1"
+                >
                   Phone Number
                 </label>
                 <div className="mt-2">
                   <div className="flex rounded-md bg-base-100 outline-1 -outline-offset-1 outline-base-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-primary">
                     <div className="grid shrink-0 grid-cols-1 focus-within:relative">
                       <select
-                        id="country"
-                        name="country"
+                        id="countryCode"
+                        name="countryCode"
                         autoComplete="country"
-                        aria-label="Country"
+                        aria-label="Country Code"
                         className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-base-100 py-1.5 pr-7 pl-3 text-base text-base-content/50 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                       >
                         <option>US</option>
@@ -273,6 +455,7 @@ export default function PresentationForm() {
                       />
                     </div>
                     <input
+                      id="phoneNumber"
                       type="tel"
                       name="phoneNumber"
                       value={formData.phoneNumber}
@@ -284,13 +467,18 @@ export default function PresentationForm() {
                 </div>
               </div>
             </div>
+
             <div className="flex sm:flex-row flex-col gap-4">
               <div className="w-full">
-                <label className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium mb-1"
+                >
                   Country <span className="text-error">*</span>
                 </label>
                 <div className="mt-2 grid grid-cols-1">
                   <select
+                    id="country"
                     name="country"
                     required
                     value={formData.country}
@@ -298,7 +486,7 @@ export default function PresentationForm() {
                     className="col-start-1 row-start-1 bg-base-100 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
                   >
                     <option value="">Select a country...</option>
-                    {countries.map((country) => (
+                    {COUNTRIES.map((country) => (
                       <option key={country} value={country}>
                         {country}
                       </option>
@@ -310,13 +498,18 @@ export default function PresentationForm() {
                   />
                 </div>
               </div>
+
               {showStateSelection && (
                 <div className="w-full">
-                  <label className="block text-sm font-medium mb-1">
+                  <label
+                    htmlFor="state"
+                    className="block text-sm font-medium mb-1"
+                  >
                     {stateLabel} <span className="text-error">*</span>
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
+                      id="state"
                       name="state"
                       value={formData.state}
                       required={showStateSelection}
@@ -340,31 +533,69 @@ export default function PresentationForm() {
                 </div>
               )}
             </div>
-            <div className="w-full flex-1 min-w-48">
-              <label className="block text-sm font-medium mb-1">
-                Industry <span className="text-error">*</span>
-              </label>
-              <input
-                type="text"
-                name="industry"
-                required
-                value={formData.industry}
-                onChange={handleChange}
-                placeholder="Example: Education"
-                className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
-              />
+
+            <div className="flex flex-wrap gap-4">
+              <div className="w-full flex-1 min-w-48">
+                <label
+                  htmlFor="industry"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Industry <span className="text-error">*</span>
+                </label>
+                <input
+                  id="industry"
+                  type="text"
+                  name="industry"
+                  required
+                  value={formData.industry}
+                  onChange={handleChange}
+                  placeholder="Example: Education"
+                  className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                />
+              </div>
+
+              <div className="w-full flex-2 sm:min-w-96">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium mb-1"
+                >
+                  LinkedIn <span className="text-error">*</span>
+                </label>
+                <div className="mt-2 flex">
+                  <div className="hidden sm:flex shrink-0 items-center rounded-l-md bg-base-100 px-3 text-base text-base-content/50 outline-1 -outline-offset-1 outline-base-300 sm:text-sm/6">
+                    https://www.linkedin.com/in/
+                  </div>
+                  <div className="flex sm:hidden shrink-0 items-center rounded-l-md bg-base-100 px-3 text-base text-base-content/50 outline-1 -outline-offset-1 outline-base-300 sm:text-sm/6">
+                    linkedin.com/in/
+                  </div>
+                  <input
+                    id="username"
+                    type="text"
+                    name="username"
+                    placeholder="username"
+                    required
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="-ml-px block w-full grow rounded-r-md bg-base-100 px-3 py-1.5 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="expertise"
+                className="block text-sm font-medium mb-1"
+              >
                 Any additional details you would like to share?
               </label>
               <input
+                id="expertise"
                 type="text"
                 name="expertise"
                 value={formData.expertise}
                 onChange={handleChange}
-                className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
               />
             </div>
           </div>
@@ -377,11 +608,11 @@ export default function PresentationForm() {
           </h2>
 
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
+            <fieldset>
+              <legend className="block text-sm font-medium mb-1">
                 Do you already have an audience in mind?
                 <span className="text-error">*</span>
-              </label>
+              </legend>
               <div className="space-x-4">
                 <label className="inline-flex items-center">
                   <input
@@ -408,42 +639,52 @@ export default function PresentationForm() {
                   No
                 </label>
               </div>
-            </div>
+            </fieldset>
+
             {formData.hasAudience === "yes" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label
+                    htmlFor="expectedAttendees"
+                    className="block text-sm font-medium mb-1"
+                  >
                     Expected Number of Attendees?
                   </label>
                   <input
+                    id="expectedAttendees"
                     type="number"
                     name="expectedAttendees"
                     min="0"
                     placeholder="10"
                     value={formData.expectedAttendees}
                     onChange={handleChange}
-                    className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                    className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label
+                    htmlFor="locationDetails"
+                    className="block text-sm font-medium mb-1"
+                  >
                     Any additional details you would like to share?
                   </label>
                   <input
+                    id="locationDetails"
                     name="locationDetails"
                     type="text"
                     value={formData.locationDetails}
                     placeholder="Example: Teacher at XYZ High School or Coach of ABC baseball team."
                     onChange={handleChange}
-                    className="col-start-1 row-start-1 block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
+                    className="block w-full rounded-md bg-base-100 py-2 px-3 text-base text-base-content outline-1 -outline-offset-1 outline-base-300 placeholder:text-base-content/70 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm/6"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
+
+                <fieldset>
+                  <legend className="block text-sm font-medium mb-1">
                     Do you need permission to present to this group?
                     <span className="text-error">*</span>
-                  </label>
+                  </legend>
                   <div className="space-x-4">
                     <label className="inline-flex items-center">
                       <input
@@ -470,14 +711,19 @@ export default function PresentationForm() {
                       No
                     </label>
                   </div>
-                </div>
+                </fieldset>
+
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label
+                    htmlFor="locationType"
+                    className="block text-sm font-medium mb-1"
+                  >
                     What is the location you plan to present at?
                     <span className="text-error">*</span>
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
+                      id="locationType"
                       name="locationType"
                       required={formData.hasAudience === "yes"}
                       value={formData.locationType}
@@ -500,10 +746,14 @@ export default function PresentationForm() {
 
                 {formData.locationType === "other" && (
                   <div>
-                    <label className="block text-sm font-medium mb-1">
+                    <label
+                      htmlFor="locationTypeOther"
+                      className="block text-sm font-medium mb-1"
+                    >
                       Please specify:
                     </label>
                     <input
+                      id="locationTypeOther"
                       type="text"
                       name="locationTypeOther"
                       value={formData.locationTypeOther}
@@ -521,42 +771,44 @@ export default function PresentationForm() {
         <section>
           <h2 className="text-xl font-semibold mb-4">Time Frame</h2>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Expected presentation timeframe{" "}
-                <span className="text-error">*</span>
-              </label>
-              <div className="mt-2 grid grid-cols-1">
-                <select
-                  name="timeframe"
-                  required
-                  value={formData.timeframe}
-                  onChange={handleChange}
-                  className="col-start-1 bg-base-100 row-start-1 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
-                >
-                  <option value="">Select a timeframe...</option>
-                  <option value="next-month">Within the next month</option>
-                  <option value="2-6-months">2 to 6 months out</option>
-                  <option value="6-plus-months">6+ months out</option>
-                </select>
-                <FaCaretDown
-                  aria-hidden="true"
-                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
-                />
-              </div>
+          <div>
+            <label
+              htmlFor="timeframe"
+              className="block text-sm font-medium mb-1"
+            >
+              Expected presentation timeframe{" "}
+              <span className="text-error">*</span>
+            </label>
+            <div className="mt-2 grid grid-cols-1">
+              <select
+                id="timeframe"
+                name="timeframe"
+                required
+                value={formData.timeframe}
+                onChange={handleChange}
+                className="col-start-1 bg-base-100 row-start-1 w-full appearance-none rounded-md py-1.5 pr-8 pl-3 text-base text-base-content/70 outline-1 -outline-offset-1 outline-base-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:text-sm/6"
+              >
+                <option value="">Select a timeframe...</option>
+                <option value="next-month">Within the next month</option>
+                <option value="2-6-months">2 to 6 months out</option>
+                <option value="6-plus-months">6+ months out</option>
+              </select>
+              <FaCaretDown
+                aria-hidden="true"
+                className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-base-content/50 sm:size-4"
+              />
             </div>
           </div>
         </section>
 
         {/* Legal Acknowledgment */}
         <section ref={disclaimerRef}>
-          <div className="flex sm:flex-row flex-col gap-4 items-centers mb-4">
+          <div className="flex sm:flex-row flex-col gap-4 items-center mb-4">
             <h2 className="text-xl font-semibold">Legal Acknowledgment</h2>
             <Link
               href="/legal"
               target="_blank"
-              className="text-sm text-base-content/70 mt-1"
+              className="text-sm text-base-content/70"
             >
               Learn more
             </Link>
@@ -565,7 +817,7 @@ export default function PresentationForm() {
           <div className="space-y-4">
             <div
               onScroll={handleDisclaimerScroll}
-              className="p-4 rounded-md border border-base-300 bg-base-100 h-32 overflow-scroll space-y-4"
+              className="p-4 rounded-md border border-base-300 bg-base-100 h-32 overflow-y-auto space-y-4 relative"
             >
               <p className="text-base font-bold text-base-content">
                 DISCLAIMER, TERMS, AND CONDITIONS
@@ -623,6 +875,13 @@ export default function PresentationForm() {
                 </li>
               </ol>
             </div>
+
+            {!hasScrolledToBottom && (
+              <p className="text-sm text-warning">
+                Please scroll to the bottom of the disclaimer to continue
+              </p>
+            )}
+
             <div>
               <label className="flex items-center">
                 <input
@@ -630,9 +889,9 @@ export default function PresentationForm() {
                   name="acknowledgement"
                   required
                   checked={formData.acknowledgement}
-                  disabled={!hasScrolledToBottom}
                   onChange={handleCheckbox}
-                  className="mr-2 checkbox checkbox-sm bg-base-100 disabled:bg-base-200"
+                  disabled={!hasScrolledToBottom}
+                  className="mr-2 checkbox checkbox-sm checkbox-neutral disabled:opacity-50"
                 />
                 <span className="text-sm">
                   I acknowledge that I have read and agree to the disclaimer
@@ -642,17 +901,19 @@ export default function PresentationForm() {
             </div>
           </div>
         </section>
+
         {/* Submit Button */}
         <div className="pt-4 space-y-4">
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-primary rounded border border-primary disabled:bg-base-200 disabled:border-base-300"
+            className="w-full py-2 px-4 bg-primary rounded border border-primary disabled:bg-base-200 disabled:border-base-300 disabled:cursor-not-allowed transition-colors"
             disabled={loading || !isFormValid}
           >
             {loading ? "Submitting Response..." : "Submit"}
           </button>
+
           {!isFormValid && (
-            <div className="px-2 py-1 text-center text-sm text-warning border border-warning/30 bg-warning/10 rounded-lg">
+            <div className="px-2 py-1 text-center text-sm text-warning border border-warning/20 bg-warning/5 rounded-lg">
               <p>
                 {!hasScrolledToBottom
                   ? "Please scroll through the disclaimer and check all required fields"
@@ -666,7 +927,7 @@ export default function PresentationForm() {
         <Link
           href="/privacy"
           target="_blank"
-          className="mx-auto text-base-content/50 hover:text-base-content text-sm"
+          className="mx-auto text-base-content/50 hover:text-base-content text-sm text-center block"
         >
           Privacy Policy
         </Link>
