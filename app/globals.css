@@ -92,6 +92,14 @@
     min-height: 100vh;
   }
 
+  b {
+    color: var(--color-base-content);
+  }
+
+  p, li {
+    @apply text-base-content/70 leading-relaxed
+  }
+
   body::-webkit-scrollbar {
     display: none;
   }

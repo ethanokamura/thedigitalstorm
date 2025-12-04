@@ -259,11 +259,33 @@ export default function PresentationForm() {
 
   return complete ? (
     <div className="space-y-4">
-      <h1 className="text-4xl font-bold">Thank You!</h1>
-      <p className="text-base-content/70">
-        Thank you for registering your interest in this initiative. We will
-        email you when the presentation is released.
+      <h1 className="text-4xl font-bold">Success!</h1>
+      <h2 className="text-xl font-bold">Your Interest is Registered!</h2>
+      <p>
+        Thank you for submitting your details. We sincerely appreciate your
+        energy and drive to educate your community on{" "}
+        <b>“Navigating the Digital Storm”</b> and protecting young people from
+        online threats.
       </p>
+      <h2 className="text-xl font-bold">What Happens Next?</h2>
+      <ul className="space-y-2 list-disc marker:text-primary pl-4">
+        <li>
+          We have received your information about your plans for utilizing the
+          presentation. This helps us better support the community.
+        </li>
+        <li>
+          The presentation package will be officially released and sent to you
+          via email in January.
+        </li>
+      </ul>
+      <p>
+        As we work toward the New Year, we wish you a wonderful and safe holiday
+        season, whatever your traditions may be.
+      </p>
+      <div>
+        <h2 className="text-xl font-bold">Happy Holidays!</h2>
+        <p>- The Digital Storm Education Team</p>
+      </div>
     </div>
   ) : (
     <div>
