@@ -6,9 +6,9 @@
 @plugin "daisyui/theme" {
   name: "digital-storm";
   default: true;
-  --color-base-100: #10141a;
-  --color-base-200: #161b23;
-  --color-base-300: #1f2630;
+  --color-base-100: #0a0e27;
+  --color-base-200: #1a1f3a;
+  --color-base-300: #2a2f4a;
   --color-base-content: #e8ecf0;
   --color-primary: #8875E0;
   --color-primary-content: #10141a;
@@ -63,11 +63,11 @@
   }
 
   main {
-    @apply py-30 px-4 md:px-10 w-screen min-h-screen mx-auto max-w-3xl flex flex-col gap-10;
+    @apply py-20 sm:py-30 px-4 md:px-10 w-screen min-h-screen mx-auto max-w-3xl flex flex-col gap-10;
   }
 
   html {
-    background-color: var(--color-base-100);
+    background-color: var(--color-base-200);
     padding: 0px;
     margin: 0px;
     width: 100vw;
@@ -82,7 +82,7 @@
 
   body {
     font-family: var(--font-family-base);
-    background-color: var(--color-base-100);
+    background-color: var(--color-base-200);
     color: var(--color-base-content);
     transition: background-color 0.3s ease, color 0.3s ease;
     padding: 0;

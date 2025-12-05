@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Luckiest_Guy } from "next/font/google";
 import "./globals.css";
+import AppBar from "@/app/components/AppBar";
+import AppDrawer from "./components/AppDrawer";
+import { DrawerProvider } from "./providers/DrawerProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +42,12 @@ export default function RootLayout({
                       md:bg-[radial-gradient(ellipse_at_50%_0%,rgba(136,117,224,0.15)_0%,transparent_50%),radial-gradient(ellipse_at_80%_50%,rgba(112,212,224,0.1)_0%,transparent_50%),radial-gradient(ellipse_at_20%_80%,rgba(216,150,255,0.1)_0%,transparent_50%)]"
           />
         </div>
-        {children}
+        <DrawerProvider>
+          <AppBar />
+          <AppDrawer />
+          {children}
+        </DrawerProvider>
+        {/* <Footer /> */}
       </body>
     </html>
   );
